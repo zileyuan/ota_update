@@ -38,6 +38,7 @@ public class OtaUpdatePlugin implements EventChannel.StreamHandler, PluginRegist
     private final Registrar registrar;
     private EventChannel.EventSink progressSink;
     private String downloadUrl;
+    private String provider;
 
     private static final String TAG = "FLUTTER OTA";
 
@@ -62,6 +63,7 @@ public class OtaUpdatePlugin implements EventChannel.StreamHandler, PluginRegist
         }
         progressSink = events;
         downloadUrl = ((Map)arguments).get("url").toString();
+        provider = ((Map)arguments).get("provider").toString();
 
         if (
 //                PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(registrar.context(), Manifest.permission.ACCESS_WIFI_STATE) &&
@@ -139,7 +141,7 @@ public class OtaUpdatePlugin implements EventChannel.StreamHandler, PluginRegist
                     Intent intent;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         //AUTHORITY NEEDS TO BE THE SAME ALSO IN MANIFEST
-                        Uri apkUri = FileProvider.getUriForFile(context, "sk.fourq.ota_update.provider", new File(destination));
+                        Uri apkUri = FileProvider.getUriForFile(context, provider, new File(destination));
                         intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
                         intent.setData(apkUri);
                         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
